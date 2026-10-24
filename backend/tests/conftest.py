@@ -7,7 +7,8 @@ from app.core.config import settings
 from app.db.base import Base
 from app.db.session import get_db
 from app.main import app
-from app.models import User  # noqa: F401  (registers the model on Base.metadata)
+from app.models import Role, User
+from tests.factories import auth_headers_for
 
 
 @pytest.fixture(scope="session")
@@ -48,3 +49,27 @@ def client(db_session):
     with TestClient(app) as test_client:
         yield test_client
     app.dependency_overrides.clear()
+
+
+@pytest.fixture
+def create_user(db_session):
+    """Factory fixture: persist a user directly (tokens are minted in tests, no login)."""
+
+    def _create(email: str = "user@example.com", role: str = Role.USER.value) -> User:
+        user = User(email=email, hashed_password="not-a-real-hash", role=role)
+        db_session.add(user)
+        db_session.commit()
+        db_session.refresh(user)
+        return user
+
+    return _create
+
+
+@pytest.fixture
+def user_headers(create_user):
+    return auth_headers_for(create_user("user@example.com", Role.USER.value))
+
+
+@pytest.fixture
+def admin_headers(create_user):
+    return auth_headers_for(create_user("admin@example.com", Role.ADMIN.value))
