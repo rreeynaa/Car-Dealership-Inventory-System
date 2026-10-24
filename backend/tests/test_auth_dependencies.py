@@ -1,9 +1,9 @@
 from datetime import timedelta
 
 import pytest
-from app.api.deps import require_admin
 from fastapi import HTTPException
 
+from app.api.deps import require_admin
 from app.core.security import create_access_token
 from app.models import Role, User
 from tests.factories import auth_headers_for

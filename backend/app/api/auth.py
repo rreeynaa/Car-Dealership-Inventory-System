@@ -1,8 +1,12 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.api.deps import get_current_user
 from app.core.exceptions import EmailAlreadyRegisteredError, InvalidCredentialsError
 from app.db.session import get_db
+from app.models import User
 from app.repositories.user_repository import UserRepository
 from app.schemas.user import LoginRequest, TokenOut, UserCreate, UserOut
 from app.services.auth_service import AuthService
@@ -35,3 +39,9 @@ def login(data: LoginRequest, service: AuthService = Depends(get_auth_service)):
             headers={"WWW-Authenticate": "Bearer"},
         ) from None
     return TokenOut(access_token=token, user=user)
+
+
+@router.get("/me", response_model=UserOut)
+def read_current_user(user: Annotated[User, Depends(get_current_user)]):
+    """Return the authenticated user (used by the frontend to restore a session)."""
+    return user
