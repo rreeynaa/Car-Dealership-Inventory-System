@@ -1,6 +1,7 @@
+from decimal import Decimal
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, require_admin
@@ -52,6 +53,33 @@ def create_vehicle(data: VehicleCreate, service: ServiceDep):
 def list_vehicles(service: ServiceDep, limit: Limit = 20, offset: Offset = 0):
     """List all vehicles, including out-of-stock ones, one page at a time."""
     return _page(service, VehicleFilters(), limit, offset)
+
+
+@router.get("/search", response_model=VehicleListOut)
+def search_vehicles(
+    service: ServiceDep,
+    make: Annotated[str | None, Query(max_length=100)] = None,
+    model: Annotated[str | None, Query(max_length=100)] = None,
+    category: Annotated[str | None, Query(max_length=50)] = None,
+    min_price: Annotated[Decimal | None, Query(ge=0)] = None,
+    max_price: Annotated[Decimal | None, Query(ge=0)] = None,
+    limit: Limit = 20,
+    offset: Offset = 0,
+):
+    """Search by make, model, category (partial, case-insensitive) and price range.
+
+    Declared before /{vehicle_id} so that "search" is not parsed as an id.
+    """
+    if min_price is not None and max_price is not None and min_price > max_price:
+        raise HTTPException(422, detail="min_price must not be greater than max_price")
+    filters = VehicleFilters(
+        make=make,
+        model=model,
+        category=category,
+        min_price=min_price,
+        max_price=max_price,
+    )
+    return _page(service, filters, limit, offset)
 
 
 @router.get("/{vehicle_id}", response_model=VehicleOut)
