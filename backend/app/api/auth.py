@@ -20,7 +20,7 @@ def register(data: UserCreate, service: AuthService = Depends(get_auth_service))
     try:
         return service.register(data)
     except EmailAlreadyRegisteredError:
-        raise HTTPException(status.HTTP_409_CONFLICT, detail="Email already registered")
+        raise HTTPException(status.HTTP_409_CONFLICT, detail="Email already registered") from None
 
 
 @router.post("/login", response_model=TokenOut)
@@ -33,5 +33,5 @@ def login(data: LoginRequest, service: AuthService = Depends(get_auth_service)):
             status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password",
             headers={"WWW-Authenticate": "Bearer"},
-        )
+        ) from None
     return TokenOut(access_token=token, user=user)
