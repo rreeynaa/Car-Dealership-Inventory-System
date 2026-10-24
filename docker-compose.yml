@@ -1,4 +1,16 @@
 services:
+  backend:
+    build: ./backend
+    environment:
+      ENVIRONMENT: development
+      DATABASE_URL: postgresql+psycopg://dealership:dealership@db:5432/dealership
+      JWT_SECRET: ${JWT_SECRET:-dev-only-secret-change-me-in-production-0123456789}
+      CORS_ORIGINS: http://localhost:5173,http://localhost:3000
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
   db:
     image: postgres:16-alpine
     environment:
