@@ -7,3 +7,7 @@ class EmailAlreadyRegisteredError(Exception):
 
 class InvalidCredentialsError(Exception):
     """Raised on a failed login (unknown email or wrong password)."""
+
+
+class VehicleNotFoundError(Exception):
+    """Raised when a vehicle id does not exist."""
