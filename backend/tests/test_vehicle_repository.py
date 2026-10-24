@@ -1,8 +1,8 @@
 from decimal import Decimal
 
 import pytest
-from app.repositories.vehicle_repository import VehicleFilters, VehicleRepository
 
+from app.repositories.vehicle_repository import VehicleFilters, VehicleRepository
 from tests.factories import make_vehicle, seed_catalog
 
 
