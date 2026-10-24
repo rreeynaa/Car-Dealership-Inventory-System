@@ -3,6 +3,8 @@ def test_health_returns_ok(client):
 
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
+
+
 def test_cors_allows_configured_origin(client):
     response = client.options(
         "/api/health",

@@ -13,9 +13,9 @@ def normalize_database_url(url: str) -> str:
     would map to the legacy psycopg2 driver.
     """
     if url.startswith("postgres://"):
-        url = "postgresql://" + url[len("postgres://"):]
+        url = "postgresql://" + url[len("postgres://") :]
     if url.startswith("postgresql://"):
-        url = "postgresql+psycopg://" + url[len("postgresql://"):]
+        url = "postgresql+psycopg://" + url[len("postgresql://") :]
     return url
 
 
