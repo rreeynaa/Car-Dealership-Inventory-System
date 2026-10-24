@@ -1,9 +1,21 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from app.core.config import settings
 
 app = FastAPI(
     title="Car Dealership Inventory API",
     version="0.1.0",
     description="Manage vehicles and inventory. Interactive docs at /docs.",
+)
+
+# Tokens travel in the Authorization header (not cookies), so credentials stay off.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_origin_list,
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
