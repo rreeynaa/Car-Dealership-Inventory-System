@@ -23,7 +23,14 @@ Deployed it on render just the frontend and am working on backend connection
 
 ## Stack
 
-FastAPI · PostgreSQL · SQLAlchemy 2 + Alembic · JWT auth · React + TypeScript + Vite · Tailwind · TanStack Query · pytest · Vitest · Docker Compose · GitHub Actions
+## 🛠️ Tech Stack
+
+| Layer | Technologies |
+|-------|--------------|
+| **Backend** | FastAPI · PostgreSQL · SQLAlchemy 2 · Alembic · JWT Authentication |
+| **Frontend** | React · TypeScript · Vite · Tailwind CSS · TanStack Query |
+| **Testing** | pytest · Vitest |
+| **DevOps & CI/CD** | Docker Compose · GitHub Actions |
 
 ## Run locally
 
@@ -78,13 +85,38 @@ CI (ruff, pytest against Postgres, frontend lint/test/build) runs on every push.
 
 ## My AI Usage
 
-**Tool:** Claude (Anthropic). 
+**Tool:** Claude (Anthropic)
 
-**How AI helped:** I gave it the kata and asked for plan, a test-first commit plan, and drafts of the tests and implementation for each step, plus boilerplate (Docker, Alembic, CI, React structure). I also asked it to explain design choices, such as atomic updates and why login errors are identical.
+### How I used AI
+I used Claude as a pair-programming partner, not an autopilot. I gave it the kata and asked for:
+- A **delivery plan** and a **test-first commit plan** (red → green → refactor)
+- **Draft tests and implementations** for each step
+- **Boilerplate** for Docker, Alembic migrations, CI, and the React project structure
+- **Explanations of design trade-offs**, such as why stock updates must be **atomic** (to prevent overselling under concurrent requests) and why **login errors are identical** for unknown user vs. wrong password (to prevent user enumeration)
 
-**What I did:**
-- Built the repo step by step, running every command and keeping the red → green → commit order.
-- Worked on the REST API endpoints
-- Ran each generated snippet and debugged what broke, reporting the real errors back: `StrEnum` failing on my Python 3.10, ruff `B008`/`B904` failures in CI, a duplicate-argument `CORSMiddleware` error, rate-limit tests that never returned 429, and running pytest from the wrong directory.
-- Got the backend suite and CI to green, then tested the running API by hand in Swagger, including the 403 for normal users, the 409 on a sold-out car and the 429 on repeated bad logins.
-- Made the scope and design calls: FastAPI + PostgreSQL, which extras to include, and admin-only create/update.
+### What I did myself
+**Engineering and ownership**
+- Built the repo incrementally, running every command and preserving the **red → green → commit** history so each commit is a verified, working step
+- Implemented and refined the **REST API endpoints**
+- Made the **architecture and scope decisions**: chose FastAPI + PostgreSQL, selected which extras to include, and designed the **admin-only create/update** permission model
+
+**Verification and debugging**
+I treated AI output as untrusted until it ran. Every snippet was executed, and when it failed I diagnosed the issue and fed the real error back:
+
+| Problem | Root cause / fix |
+|---|---|
+| `StrEnum` import failure | Python 3.10 compatibility, since `StrEnum` needs 3.11+ |
+| Ruff `B008` / `B904` failing CI | Lint rules on FastAPI `Depends` defaults and exception chaining |
+| `CORSMiddleware` duplicate-argument error | Misconfigured middleware setup |
+| Rate-limit tests never returning `429` | Test setup not triggering the limiter correctly |
+| Tests failing to run | `pytest` executed from the wrong directory |
+
+**Quality gates**
+- Brought the **backend test suite and CI pipeline to green**
+- Manually tested the running API in **Swagger UI**, validating real behavior:
+  - `403` when a normal user hits an admin-only route
+  - `409` when purchasing a sold-out car
+  - `429` after repeated failed login attempts
+
+### Takeaway
+AI sped up scaffolding and drafting, while I owned the design decisions, debugging, and verification.
