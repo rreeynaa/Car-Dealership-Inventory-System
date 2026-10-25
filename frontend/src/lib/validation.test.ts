@@ -1,14 +1,5 @@
 import { describe, expect, it } from 'vitest'
-function validatePassword(password: string): string | null {
-  if (password.length < 8) return 'Password must be at least 8 characters'
-  if (!/[a-z]/i.test(password) || !/\d/.test(password)) {
-    return 'Password must contain a letter and one digit'
-  }
-  if (new TextEncoder().encode(password).length > 72) {
-    return 'Password must not exceed 72 bytes'
-  }
-  return null
-}
+import { validateEmail, validatePassword, validateVehicleForm } from './validation'
 
 describe('validatePassword', () => {
   it('accepts a strong password', () => {
@@ -25,5 +16,35 @@ describe('validatePassword', () => {
 
   it('rejects passwords longer than the 72-byte bcrypt limit', () => {
     expect(validatePassword('a1'.repeat(40))).toMatch(/72/)
+  })
+})
+
+describe('validateEmail', () => {
+  it('accepts a normal address', () => expect(validateEmail('a@b.co')).toBeNull())
+  it.each(['', 'nope', 'a@b', 'a b@c.com'])('rejects %j', (v) => {
+    expect(validateEmail(v)).not.toBeNull()
+  })
+})
+
+describe('validateVehicleForm', () => {
+  const valid = { make: 'Toyota', model: 'Corolla', category: 'Sedan', price: '22450.50', quantity: '3' }
+
+  it('accepts valid input', () => expect(validateVehicleForm(valid)).toEqual({}))
+
+  it('requires text fields', () => {
+    const errors = validateVehicleForm({ ...valid, make: ' ', model: '', category: '' })
+    expect(Object.keys(errors).sort()).toEqual(['category', 'make', 'model'])
+  })
+
+  it.each(['', '0', '-5', 'abc', '10.999'])('rejects price %j', (price) => {
+    expect(validateVehicleForm({ ...valid, price }).price).toBeDefined()
+  })
+
+  it.each(['', '-1', '1.5', 'x', '1000001'])('rejects quantity %j', (quantity) => {
+    expect(validateVehicleForm({ ...valid, quantity }).quantity).toBeDefined()
+  })
+
+  it('allows zero quantity', () => {
+    expect(validateVehicleForm({ ...valid, quantity: '0' })).toEqual({})
   })
 })
