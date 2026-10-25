@@ -2,6 +2,8 @@
 
 Full-stack dealership inventory: customers browse, search and buy vehicles; admins add, edit, delete and restock them.
 
+Deployed it on render just the frontend and am working on backend connection
+
 ![CI](https://github.com/rreeynaa/Car-Dealership-Inventory-System/actions/workflows/ci.yml/badge.svg)
 
 
