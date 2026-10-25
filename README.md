@@ -5,10 +5,19 @@ Full-stack dealership inventory: customers browse, search and buy vehicles; admi
 ![CI](https://github.com/rreeynaa/Car-Dealership-Inventory-System/actions/workflows/ci.yml/badge.svg)
 
 
-![Login page](docs/screenshots/login.png)
-![Register page](docs/screenshots/register.png)
-![Admin Dashboard](docs/screenshots/admindashboard.png)
-![User Dashboard](docs/screenshots/userdashboard.png)
+## Screenshots
+
+### Login Page
+![Login Page](./login.png)
+
+### Register Page
+![Register Page](./register.png)
+
+### User Dashboard
+![User Dashboard](./userdashboard.png)
+
+### Admin Dashboard
+![Admin Dashboard](./admindashboard.png)
 
 ## Stack
 
