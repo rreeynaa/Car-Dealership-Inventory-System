@@ -7,3 +7,4 @@ pydantic[email]>=2.7
 pydantic-settings>=2.3
 pyjwt>=2.8
 bcrypt>=4.1
+slowapi>=0.1.9

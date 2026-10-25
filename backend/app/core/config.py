@@ -31,6 +31,12 @@ class Settings(BaseSettings):
     # Comma-separated list of allowed browser origins (the frontend URLs).
     cors_origins: str = "http://localhost:5173,http://localhost:3000"
 
+    # Rate limiting. Limits use slowapi syntax, e.g. "10/minute".
+    rate_limit_enabled: bool = True
+    login_rate_limit: str = "10/minute"
+    register_rate_limit: str = "20/hour"
+    purchase_rate_limit: str = "30/minute"
+
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     @field_validator("database_url", "test_database_url")

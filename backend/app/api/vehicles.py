@@ -1,10 +1,12 @@
 from decimal import Decimal
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, require_admin
+from app.core.config import settings
+from app.core.limiter import limiter
 from app.db.session import get_db
 from app.repositories.vehicle_repository import VehicleFilters, VehicleRepository
 from app.schemas.vehicle import (
@@ -114,7 +116,8 @@ def delete_vehicle(vehicle_id: int, service: ServiceDep) -> None:
     response_model=VehicleOut,
     responses={409: {"description": "Vehicle is out of stock"}},
 )
-def purchase_vehicle(vehicle_id: int, service: ServiceDep):
+@limiter.limit(lambda: settings.purchase_rate_limit)
+def purchase_vehicle(request: Request, vehicle_id: int, service: ServiceDep):
     """Purchase one unit of a vehicle, decreasing its stock."""
     return service.purchase(vehicle_id)
 

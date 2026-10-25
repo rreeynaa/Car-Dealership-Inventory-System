@@ -1,7 +1,7 @@
 import pytest
-from app.core.limiter import limiter
 
 from app.core.config import settings
+from app.core.limiter import limiter
 from tests.factories import make_vehicle
 
 

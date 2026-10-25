@@ -4,6 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
+from app.core.limiter import limiter
 from app.db.base import Base
 from app.db.session import get_db
 from app.main import app
@@ -73,3 +74,9 @@ def user_headers(create_user):
 @pytest.fixture
 def admin_headers(create_user):
     return auth_headers_for(create_user("admin@example.com", Role.ADMIN.value))
+
+
+@pytest.fixture(autouse=True)
+def _disable_rate_limiting(monkeypatch):
+    """Off by default in tests; tests/test_rate_limit.py switches it on explicitly."""
+    monkeypatch.setattr(limiter, "enabled", False)
