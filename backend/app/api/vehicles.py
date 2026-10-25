@@ -7,7 +7,13 @@ from sqlalchemy.orm import Session
 from app.api.deps import get_current_user, require_admin
 from app.db.session import get_db
 from app.repositories.vehicle_repository import VehicleFilters, VehicleRepository
-from app.schemas.vehicle import VehicleCreate, VehicleListOut, VehicleOut, VehicleUpdate
+from app.schemas.vehicle import (
+    RestockRequest,
+    VehicleCreate,
+    VehicleListOut,
+    VehicleOut,
+    VehicleUpdate,
+)
 from app.services.vehicle_service import VehicleService
 
 # Every route requires a valid token; admin-only routes add require_admin on top.
@@ -101,3 +107,19 @@ def update_vehicle(vehicle_id: int, data: VehicleUpdate, service: ServiceDep):
 def delete_vehicle(vehicle_id: int, service: ServiceDep) -> None:
     """Delete a vehicle (admin only)."""
     service.delete(vehicle_id)
+
+
+@router.post(
+    "/{vehicle_id}/purchase",
+    response_model=VehicleOut,
+    responses={409: {"description": "Vehicle is out of stock"}},
+)
+def purchase_vehicle(vehicle_id: int, service: ServiceDep):
+    """Purchase one unit of a vehicle, decreasing its stock."""
+    return service.purchase(vehicle_id)
+
+
+@router.post("/{vehicle_id}/restock", response_model=VehicleOut, dependencies=admin_only)
+def restock_vehicle(vehicle_id: int, data: RestockRequest, service: ServiceDep):
+    """Add stock to a vehicle (admin only)."""
+    return service.restock(vehicle_id, data.quantity)

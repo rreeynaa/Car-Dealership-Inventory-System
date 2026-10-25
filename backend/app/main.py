@@ -4,7 +4,7 @@ from fastapi.responses import JSONResponse
 
 from app.api import auth, vehicles
 from app.core.config import settings
-from app.core.exceptions import VehicleNotFoundError
+from app.core.exceptions import OutOfStockError, VehicleNotFoundError
 
 app = FastAPI(
     title="Car Dealership Inventory API",
@@ -29,6 +29,11 @@ app.include_router(vehicles.router)
 async def vehicle_not_found_handler(_: Request, exc: VehicleNotFoundError) -> JSONResponse:
     """Translate the domain error into a 404 once, instead of in every route."""
     return JSONResponse(status_code=404, content={"detail": "Vehicle not found"})
+
+
+@app.exception_handler(OutOfStockError)
+async def out_of_stock_handler(_: Request, exc: OutOfStockError) -> JSONResponse:
+    return JSONResponse(status_code=409, content={"detail": "Vehicle is out of stock"})
 
 
 @app.get("/api/health", tags=["meta"])

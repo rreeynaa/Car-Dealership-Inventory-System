@@ -65,3 +65,7 @@ class VehicleListOut(BaseModel):
     total: int
     limit: int
     offset: int
+
+
+class RestockRequest(BaseModel):
+    quantity: Annotated[int, Field(ge=1, le=MAX_QUANTITY)]

@@ -11,3 +11,7 @@ class InvalidCredentialsError(Exception):
 
 class VehicleNotFoundError(Exception):
     """Raised when a vehicle id does not exist."""
+
+
+class OutOfStockError(Exception):
+    """Raised when a purchase is attempted on a vehicle with no stock."""
