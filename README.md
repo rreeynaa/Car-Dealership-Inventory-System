@@ -2,7 +2,7 @@
 
 Full-stack dealership inventory: customers browse, search and buy vehicles; admins add, edit, delete and restock them.
 
-![CI](https://github.com/rreeynaa/car-dealership-inventory/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/rreeynaa/Car-Dealership-Inventory-System/actions/workflows/ci.yml/badge.svg)
 
 
 ![Dashboard](docs/screenshots/dashboard.png)
