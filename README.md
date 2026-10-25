@@ -117,6 +117,11 @@ I treated AI output as untrusted until it ran. Every snippet was executed, and w
   - `403` when a normal user hits an admin-only route
   - `409` when purchasing a sold-out car
   - `429` after repeated failed login attempts
-
 ### Takeaway
-AI sped up scaffolding and drafting, while I owned the design decisions, debugging, and verification.
+
+AI sped up scaffolding and drafting, but the reliability of the result came from my own testing and judgment.
+
+- **Generated code is a draft, not a deliverable.** Several suggestions failed on first run (Python 3.10 incompatibility, CI lint errors, a misconfigured middleware, rate-limit tests that never returned `429`). I caught them only because I ran everything and fixed the root causes.
+- **Test-first pays off.** The red → green → commit loop made it easy to pinpoint what broke and when.
+- **Security and concurrency are design decisions.** Atomic stock updates prevent overselling, and identical login errors prevent account enumeration.
+- **I owned the decisions.** Architecture, scope, permissions, and verification were mine; AI handled first drafts and explanations.
