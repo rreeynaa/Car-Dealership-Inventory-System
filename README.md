@@ -5,8 +5,10 @@ Full-stack dealership inventory: customers browse, search and buy vehicles; admi
 ![CI](https://github.com/rreeynaa/Car-Dealership-Inventory-System/actions/workflows/ci.yml/badge.svg)
 
 
-!Login Page("C:\Users\Reyna\OneDrive\Pictures\Screenshots\Screenshot 2026-10-25 203654.png")
-![Admin view](docs/screenshots/admin.png)
+![Login page](docs/screenshots/login.png)
+![Register page](docs/screenshots/register.png)
+![Admin Dashboard](docs/screenshots/admindashboard.png)
+![User Dashboard](docs/screenshots/userdashboard.png)
 
 ## Stack
 
@@ -75,4 +77,3 @@ CI (ruff, pytest against Postgres, frontend lint/test/build) runs on every push.
 - Ran each generated snippet and debugged what broke, reporting the real errors back: `StrEnum` failing on my Python 3.10, ruff `B008`/`B904` failures in CI, a duplicate-argument `CORSMiddleware` error, rate-limit tests that never returned 429, and running pytest from the wrong directory.
 - Got the backend suite and CI to green, then tested the running API by hand in Swagger, including the 403 for normal users, the 409 on a sold-out car and the 429 on repeated bad logins.
 - Made the scope and design calls: FastAPI + PostgreSQL, which extras to include, and admin-only create/update.
-
