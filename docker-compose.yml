@@ -3,6 +3,7 @@ services:
     build: ./backend
     environment:
       ENVIRONMENT: development
+      SEED_ON_STARTUP: "true"
       DATABASE_URL: postgresql+psycopg://dealership:dealership@db:5432/dealership
       JWT_SECRET: ${JWT_SECRET:-dev-only-secret-change-me-in-production-0123456789}
       CORS_ORIGINS: http://localhost:5173,http://localhost:3000

@@ -16,4 +16,4 @@ USER appuser
 EXPOSE 8000
 
 # Hosts like Render/Railway inject $PORT. In Part 2 we prepend "alembic upgrade head &&".
-CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+CMD ["sh", "-c", "alembic upgrade head && python -m app.seed --if-enabled && uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000} --proxy-headers --forwarded-allow-ips='*'"]
