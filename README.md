@@ -5,7 +5,7 @@ Full-stack dealership inventory: customers browse, search and buy vehicles; admi
 ![CI](https://github.com/rreeynaa/Car-Dealership-Inventory-System/actions/workflows/ci.yml/badge.svg)
 
 
-![Dashboard](docs/screenshots/dashboard.png)
+!Login Page("C:\Users\Reyna\OneDrive\Pictures\Screenshots\Screenshot 2026-10-25 203654.png")
 ![Admin view](docs/screenshots/admin.png)
 
 ## Stack
