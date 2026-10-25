@@ -33,9 +33,7 @@ def register(
     try:
         return service.register(data)
     except EmailAlreadyRegisteredError:
-        raise HTTPException(
-            status.HTTP_409_CONFLICT, detail="Email already registered"
-        ) from None
+        raise HTTPException(status.HTTP_409_CONFLICT, detail="Email already registered") from None
 
 
 @router.post("/login", response_model=TokenOut)

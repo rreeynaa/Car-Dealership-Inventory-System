@@ -38,6 +38,12 @@ class Settings(BaseSettings):
     purchase_rate_limit: str = "30/minute"
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    # Seed data (python -m app.seed). Override these in any shared environment.
+    seed_on_startup: bool = False
+    seed_admin_email: str = "admin@dealership.com"
+    seed_admin_password: str = "Admin#12345"
+    seed_user_email: str = "user@dealership.com"
+    seed_user_password: str = "Shopper#12345"
 
     @field_validator("database_url", "test_database_url")
     @classmethod
