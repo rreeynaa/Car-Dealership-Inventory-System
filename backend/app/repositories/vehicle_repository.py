@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from decimal import Decimal
 from typing import Any
 
-from sqlalchemy import Select, func, select
+from sqlalchemy import Select, func, select, update
 from sqlalchemy.orm import Session
 
 from app.models import Vehicle
@@ -57,6 +57,40 @@ class VehicleRepository:
     def delete(self, vehicle: Vehicle) -> None:
         self._db.delete(vehicle)
         self._db.commit()
+
+    def decrement_stock(self, vehicle_id: int, amount: int = 1) -> Vehicle | None:
+        """Atomically remove stock. Returns None if the vehicle is missing or short on stock.
+
+        The WHERE clause makes the check and the write one statement, so
+        concurrent buyers cannot both take the last unit.
+        """
+        statement = (
+            update(Vehicle)
+            .where(Vehicle.id == vehicle_id, Vehicle.quantity >= amount)
+            .values(quantity=Vehicle.quantity - amount)
+            .execution_options(synchronize_session=False)
+        )
+        return self._apply_stock_change(statement, vehicle_id)
+
+    def increment_stock(self, vehicle_id: int, amount: int) -> Vehicle | None:
+        """Atomically add stock. Returns None if the vehicle does not exist."""
+        statement = (
+            update(Vehicle)
+            .where(Vehicle.id == vehicle_id)
+            .values(quantity=Vehicle.quantity + amount)
+            .execution_options(synchronize_session=False)
+        )
+        return self._apply_stock_change(statement, vehicle_id)
+
+    def _apply_stock_change(self, statement: Any, vehicle_id: int) -> Vehicle | None:
+        rows_changed = self._db.execute(statement).rowcount
+        self._db.commit()
+        if rows_changed == 0:
+            return None
+        vehicle = self._db.get(Vehicle, vehicle_id)
+        if vehicle is not None:
+            self._db.refresh(vehicle)  # the UPDATE bypassed the ORM, so reload
+        return vehicle
 
     @staticmethod
     def _apply_filters(query: Select, filters: VehicleFilters) -> Select:
